@@ -1,0 +1,100 @@
+---
+title: "Michaelis-Menten Modelling"
+author: "Nicole J. Dilernia"
+date: "2023-07-05"
+output:
+  html_document: default
+  pdf_document: default 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+# Set a working directory 
+```{r}
+setwd("...")
+```
+
+
+1. Import Data and Load Libraries
+# Data Frame - import .csv file, check for NAs, and prepare "clean" dataset without NAs
+```{r}
+# e.g., 
+AabrotanoidesINNERrep1 <- read.csv("...")
+   str(AabrotanoidesINNERrep1)
+
+anyNA(AabrotanoidesINNERrep1)
+sum(is.na(AabrotanoidesINNERrep1))
+
+AabrotanoidesINNERrep1_clean <- na.omit(AabrotanoidesINNERrep1)
+  print(AabrotanoidesINNERrep1_clean)
+anyNA(AabrotanoidesINNERrep1_clean)
+sum(is.na(AabrotanoidesINNERrep1_clean))
+```
+
+# Install and load libraries
+```{r}
+install.packages("ggplot2") # to plot models
+library(ggplot2) 
+
+install.packages("drc") # to fit and plot Michaelis-Menten (MM) model
+library(drc)  
+
+# https://www.rdocumentation.org/packages/drc/versions/2.5-12/topics/MM 
+```
+
+2. Two parameter model using Michaelis-Menten equation ("drc" package)
+# Making/Fitting a model for Michaelis-menten (2 parameters)
+```{r}
+# Fit the Michaelis-Menten model 
+MichaelisModel <- drm(VO2~PO2, data = AabrotanoidesINNERrep1_clean, fct = MM.2())
+  
+# Create a data frame of predicted values (calculating the data points to make the "MM Line")
+MMLine <- data.frame(PO2 = seq(0, max(AabrotanoidesINNERrep1_clean$PO2), length.out = 100)) 
+MMLine$VO2 <- predict(MichaelisModel, newdata = MMLine) 
+  summary(MichaelisModel)
+
+# Calculate SSR (Sum of Squares Residuals)
+ssr <- sum(resid(MichaelisModel)^2) 
+  print(ssr) 
+
+# Calculate & show the AIC of the model  
+AIC(object = MichaelisModel, k = 2) 
+
+```
+
+# Plotting Michaelis-mentin model on the data
+```{r}
+# Plot the Michaelis-Menten model against the data
+ggplot(AabrotanoidesINNERrep1_clean, aes(x=PO2, y=VO2, colour=factor("VO2"))) +
+  geom_point(stat="identity", size = 4) + 
+  ylim(0, 0.65) +
+  xlim(0, 100) +
+  geom_line(data = MMLine, aes(x=PO2, y=VO2), size=2)  +
+  scale_colour_brewer(palette = "Blues") +
+theme(plot.title = element_text(size = 10),
+      axis.title = element_text(size = 20),
+      axis.text = element_text(colour = "black", size = 30),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_rect(fill = "transparent"), 
+      plot.background = element_rect(fill = "transparent", colour = NA),
+      axis.line = element_line(colour = "black", size = 2, linetype = 1),
+      axis.ticks = element_line(colour = "black", size = 2),
+      axis.ticks.length = unit(.4, "cm")) +
+      labs(title="AabrotanoidesINNERrep1", x="pO2 (% air sat)", y="VO2 (mg O2/hr)") 
+ggsave("AabrotanoidesINNERrep1.pdf", width=10, height=7) 
+```
+
+# Display RColorBrewer Palette (color-blind friendly palette)
+```{r}
+library("RColorBrewer")       
+display.brewer.all(colorblindFriendly = TRUE)      # Show all color palettes to pick one
+```
+
+
+
+
