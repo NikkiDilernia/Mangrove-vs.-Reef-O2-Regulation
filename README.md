@@ -38,12 +38,11 @@ Description of the individual data files/folders:
 1. "Abiotic Characterisation (O2 Logger)" Folder
      a. "LoggerCode.Rmd" - code used in RStudio to analyse and visualise the environmental O2 logger data collected in the field from the two habitats (mangrove and reef).
      b. "O2mangrove_reef.csv" - .csv file of raw data collected from the environmental O2 loggers deployed at each habitat.
-2. "Hypoxia Response Curves (HRCs) (Exp. 2)" Folder
-     a. This folder includes individual .csv files of raw pO2 and VO2 data from HRCs for each treatment group and replicate, named as "treatment_groupRepX".csv.
-     b. "Michaelis-Menten_Modelling.Rmd" - code used in RStudio to model the HRCs with the 2-parameter Michaelis-Menten function.
-3. "P-R Incubations (Exp. 1)" Folder
+2. "P-R Incubations (Exp. 1)" Folder
      a. "P-R Measurements.xlsx" - spreadsheet containing P:R measurements taken during incubations, normalisation, and calculation of Net photosynthesis (PN) and respiration (R) rates, determined by calculated changes in O2 during dark and light incubations, and gross photosynthesis (PG) was determined by the addition of PN and R.
-     
+3. "Hypoxia Response Curves (HRCs) (Exp. 2)" Folder
+     a. This folder includes individual .csv files of raw pO2 and VO2 data from HRCs for each treatment group and replicate, named as "treatment_groupRepX".csv.
+     b. "Michaelis-Menten_Modelling.Rmd" - code used in RStudio to model the HRCs with the 2-parameter Michaelis-Menten function.     
 
 Abbreviations:
 pO2 - ambient levels of O2 measured (% air sat).
