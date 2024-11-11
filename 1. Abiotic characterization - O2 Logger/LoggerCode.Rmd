@@ -1,0 +1,176 @@
+---
+title: "Logger Code"
+author: "Nicole J. Dilernia"
+date: "2023-03-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Set working directory
+```{r}
+setwd("...")
+```
+
+
+### Load all data files and libraries, convert date/time and light formats, check for and remove any NA's
+(NB: Queensland is time zone Australian Eastern Standard Time (AEST) = UTC+10:00)
+```{r}
+# Temperature and tidal data
+# e.g., 
+Colony1to3TidesAndTemps <- read.csv("...")
+  str(Colony1to3TidesAndTemps)  
+  
+#  Use "lubridate" package to convert "Date-Time" format, and convert Light to "Day"/"Night" factor
+library(ggplot2) # to plot
+library(lubridate) 
+Colony1to3TidesAndTemps$Date_Time <- as.POSIXct(Colony1to3TidesAndTemps$Date_Time, format = "%d/%m/%Y %H:%M") 
+Colony1to3TidesAndTemps$Light <- as.factor(Colony1to3TidesAndTemps$Light)
+  str(Colony1to3TidesAndTemps)
+  print(Colony1to3TidesAndTemps)
+
+anyNA(Colony1to3TidesAndTemps)
+  sum(is.na(Colony1to3TidesAndTemps))
+
+Colony1to3TidesAndTemps_clean <- na.omit(Colony1to3TidesAndTemps)
+  print(Colony1to3TidesAndTemps_clean)
+anyNA(Colony1to3TidesAndTemps_clean)
+  sum(is.na(Colony1to3TidesAndTemps_clean))  
+  str(Colony1to3TidesAndTemps_clean)    
+
+# Oxygen data
+# e.g.,   
+Colony1to3Oxygen <- read.csv("...")
+  str(Colony1to3Oxygen)
+  
+Colony1to3Oxygen$Date_Time <- as.POSIXct(Colony1to3Oxygen$Date_Time, format = "%d/%m/%Y %H:%M") 
+Colony1to3Oxygen$Light <- as.factor(Colony1to3Oxygen$Light)
+  str(Colony1to3Oxygen)
+  print(Colony1to3Oxygen)
+
+anyNA(Colony1to3Oxygen)
+  sum(is.na(Colony1to3Oxygen))
+
+Colony1to3Oxygen_clean <- na.omit(Colony1to3Oxygen)
+  print(Colony1to3Oxygen_clean)
+anyNA(Colony1to3Oxygen_clean)
+  sum(is.na(Colony1to3Oxygen_clean))  
+  str(Colony1to3Oxygen_clean)
+```
+
+### TIDAL GRAPH - tidal data & diel times only 
+```{r}
+
+ylab <- "Tidal height (m)"
+(tides_Colony1to3 <- ggplot(Colony1to3TidesAndTemps_clean, aes(x=Date_Time, y=Tide)) +
+
+  annotate("rect", xmin=as.POSIXct("2022-02-05 13:30:00"), xmax=as.POSIXct("2022-02-05 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-05 19:30:00"), xmax=as.POSIXct("2022-02-06 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.5) +
+  annotate("rect", xmin=as.POSIXct("2022-02-06 06:30:00"), xmax=as.POSIXct("2022-02-06 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-06 19:30:00"), xmax=as.POSIXct("2022-02-07 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-07 06:30:00"), xmax=as.POSIXct("2022-02-07 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-07 19:30:00"), xmax=as.POSIXct("2022-02-08 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-08 06:30:00"), xmax=as.POSIXct("2022-02-08 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-08 19:30:00"), xmax=as.POSIXct("2022-02-09 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-09 06:30:00"), xmax=as.POSIXct("2022-02-09 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-09 19:30:00"), xmax=as.POSIXct("2022-02-10 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-10 06:30:00"), xmax=as.POSIXct("2022-02-10 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-10 19:30:00"), xmax=as.POSIXct("2022-02-11 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-11 06:30:00"), xmax=as.POSIXct("2022-02-11 21:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-11 21:30:00"), xmax=as.POSIXct("2022-02-12 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-12 06:30:00"), xmax=as.POSIXct("2022-02-12 21:30:00	"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-12 21:30:00"), xmax=as.POSIXct("2022-02-13 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-13 06:30:00"), xmax=as.POSIXct("2022-02-13 21:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-13 21:30:00"), xmax=as.POSIXct("2022-02-14 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-14 06:30:00"), xmax=as.POSIXct("2022-02-14 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    
+  geom_ribbon(aes(ymin = -Inf, ymax = Tide), fill = "grey23", alpha = 0.3) +
+  geom_line(color = "grey23", linewidth = 1) +
+
+  scale_x_datetime(date_breaks="1 day", date_labels = "%d %b %y") +
+  labs(x="Date", y=ylab) +
+  theme_bw( )) +
+  scale_y_continuous(position = "right", limits = c(0, 3), breaks = seq(0, 3, by = 0.5))+
+  theme(
+    axis.text=element_text(size=14),
+    axis.title=element_text(size=16),
+    legend.position = "none",
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank()
+  ) 
+ggsave("TidalHeightColony1to3.pdf", width=10, height=3)
+```
+
+### TEMPERATURE DATA (same as above, but temp instead of tides)
+```{r}
+ylab <- expression("Temperature " (degree*C))
+(temp_sample_Colony1to3 <- ggplot(Colony1to3TidesAndTemps_clean, aes(x=Date_Time, y=Temp)) +
+ 
+  geom_line(color="coral1", linewidth = 2) + 
+  labs(x="Date", y=ylab, title="") +
+  scale_x_datetime(date_breaks="2 day", date_labels = "%d %b %Y") +
+  theme_bw() +
+  scale_y_continuous(limits = c(27, 31), breaks = seq(27, 31, by = 1))+
+theme(
+    axis.text=element_text(size=14),
+    axis.title.y = element_text(colour = "black", size=16),
+    axis.title.x = element_text(size=16),
+    legend.position = "none",
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(),
+    plot.background = element_rect(fill = "white")
+  )) 
+ggsave("Temp_sample_Colony1to3.pdf", width=10, height=3)
+```
+
+
+### OXYGEN DATA - Colony 1 to 3 
+```{r}
+ylab <- "Oxygen (mg/L)"
+(oxygen_sample_Colony1to3 <- ggplot(Colony1to3Oxygen, aes(x=Date_Time)) +
+  annotate("rect", xmin=as.POSIXct("2022-02-05 13:30:00"), xmax=as.POSIXct("2022-02-05 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+     annotate("rect", xmin=as.POSIXct("2022-02-05 19:30:00"), xmax=as.POSIXct("2022-02-06 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.5) +
+  annotate("rect", xmin=as.POSIXct("2022-02-06 06:30:00"), xmax=as.POSIXct("2022-02-06 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-06 19:30:00"), xmax=as.POSIXct("2022-02-07 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-07 06:30:00"), xmax=as.POSIXct("2022-02-07 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-07 19:30:00"), xmax=as.POSIXct("2022-02-08 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-08 06:30:00"), xmax=as.POSIXct("2022-02-08 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-08 19:30:00"), xmax=as.POSIXct("2022-02-09 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-09 06:30:00"), xmax=as.POSIXct("2022-02-09 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-09 19:30:00"), xmax=as.POSIXct("2022-02-10 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-10 06:30:00"), xmax=as.POSIXct("2022-02-10 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-10 19:30:00"), xmax=as.POSIXct("2022-02-11 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-11 06:30:00"), xmax=as.POSIXct("2022-02-11 21:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-11 21:30:00"), xmax=as.POSIXct("2022-02-12 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-12 06:30:00"), xmax=as.POSIXct("2022-02-12 21:30:00	"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-12 21:30:00"), xmax=as.POSIXct("2022-02-13 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-13 06:30:00"), xmax=as.POSIXct("2022-02-13 21:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    annotate("rect", xmin=as.POSIXct("2022-02-13 21:30:00"), xmax=as.POSIXct("2022-02-14 06:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="grey", alpha = 0.6) +
+  annotate("rect", xmin=as.POSIXct("2022-02-14 06:30:00"), xmax=as.POSIXct("2022-02-14 19:30:00"), ymin = -Inf, ymax = Inf, color = NA, fill="lightgrey", alpha = 0.2) +
+    
+geom_vline(xintercept=as.numeric(as.POSIXct("2022-02-06 14:35:00", format = "%Y-%m-%d %H:%M:%S")), linetype=2, color="grey23") +
+geom_vline(xintercept=as.numeric(as.POSIXct("2022-02-07 12:30:00", format = "%Y-%m-%d %H:%M:%S")), linetype=2, color="grey23") +    
+geom_vline(xintercept=as.numeric(as.POSIXct("2022-02-09 14:00:00", format = "%Y-%m-%d %H:%M:%S")), linetype=2, color="grey23") +
+geom_vline(xintercept=as.numeric(as.POSIXct("2022-02-10 13:30:00", format = "%Y-%m-%d %H:%M:%S")), linetype=2, color="grey23") +    
+geom_vline(xintercept=as.numeric(as.POSIXct("2022-02-12 12:30:00", format = "%Y-%m-%d %H:%M:%S")), linetype=2, color="grey23") +
+geom_vline(xintercept=as.numeric(as.POSIXct("2022-02-13 14:30:00", format = "%Y-%m-%d %H:%M:%S")), linetype=2, color="grey23") +  
+  
+  labs(x="Date", y=ylab) +
+  scale_x_datetime(date_breaks="2 day", date_labels = "%d %b %Y") + # limits=lims_tide
+  theme_bw() +
+  scale_y_continuous(limits = c(2, 12), breaks = seq(2, 12, by = 2))+
+theme(
+    axis.text=element_text(size=14),
+    axis.title.y = element_text(size=16),
+    axis.title.x = element_text(size=16),
+    legend.position = "none",
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(),
+    plot.background = element_rect("white")))
+ggsave("Oxygen_sample_Colony1to3.pdf", width=10, height=3)
+```
+
