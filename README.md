@@ -25,7 +25,7 @@ Geographic location of data collection: Woody Island mangrove lagoon and Low Isl
 
 Information about funding sources that supported the collection of the data: This research is supported by an Australian Government Research Training Program Scholarship (N.J.D.). See paper for further details.
 
-**-->** Link to publication that uses the data: **TBC**
+**-->** Link to publication that uses the data: https://doi.org/10.1016/j.envres.2025.122740
 
 Treatment Groups:
 M-R = mangrove to reef transplanted colonies
